@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center">Tất cả sản phẩm</h2>
+     <a class="btn btn-success" href="/products/createProduct">Thêm sản phẩm</a>
+      <div>
+        <% products.forEach(product=>{ %>
+        <table class="table" >
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Edit</th>
+
+                </tr>
+                <tbody>
+                    <tr>
+                        <td><%- product._id %></td>
+                        <td style="width:160px"><%- product.title %></td>
+                        <td><%- product.category %></td>
+                        <td>  <img style="width:150px" src=<%-product.image %> /></td>
+                        <td><textarea style="height:100%"><%- product.description %></textarea></td>
+                        <td><%- product.price %></td>
+                        <td><%- product.type %></td>
+                        <td><form action="/products/updateProductForm/<%- product._id %>" method="get"  >
+                            <button type="submit" class="btn btn-primary">Sửa</button>
+                        </form>
+                        <form action="/products/delete/<%- product._id %>?_method=DELETE " method="post" >
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </thead>
+        </table>
+        <% }) %>
+      </div>
+    </div>
+  </body>
+</html>
