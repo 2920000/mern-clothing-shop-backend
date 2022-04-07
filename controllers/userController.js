@@ -2,8 +2,9 @@ const UserModel=require('../model/userModel')
 
 const createUser=async(req,res)=>{
     const {userId,username}=req.body.payload
+    console.log(req.body.payload)
    try {
-     await UserModel({
+   await UserModel({
          _id:userId,
          infor:{
              username
@@ -34,6 +35,6 @@ const updateShippingInfor=async(req,res)=>{
         },
         {new:true}
     )
-    res.json(shippingInforUpdated)
+    res.status(200).json(shippingInforUpdated)
 }
 module.exports={createUser,getShippingInfor,updateShippingInfor}

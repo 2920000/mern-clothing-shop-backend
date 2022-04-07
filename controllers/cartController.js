@@ -37,7 +37,6 @@ const addNewProduct = async (userId, productData) => {
 };
 const addCartToDatabase = async (req, res) => {
   const { productData, userId, cartDataFromLocal } = req.body.payload;
-
   try {
     const cartExisting = await CartModel.findById(userId);
     const allProductsInCart = cartExisting?.cart;
@@ -65,7 +64,7 @@ const addCartToDatabase = async (req, res) => {
     if ((!cartExisting && cartDataFromLocal) || !cartExisting) {
       const cartSaved = await CartModel({
         _id: userId,
-        cart: cartDataFromLocal || [productData],
+        cart: cartDataFromLocal || [],
       });
       cartSaved.save();
       return;
@@ -87,19 +86,20 @@ const addCartToDatabase = async (req, res) => {
            res.json(await addNewProduct(userId, localProduct));
         }
         updateAmount(productWantToUpdate, localProduct, userId)
-         res.json('updated')
+         res.status(200).json('updated')
       }
-     
-      return;
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 const getCartToDatabase = async (req, res) => {
-  const _id = mongoose.Types.ObjectId(req.query._id);
+  const _id = mongoose.Types.ObjectId(req.params.userId);
   try {
     const productsCart = await CartModel.findById(_id);
+    if(productsCart.cart.length===0) {
+      return res.status(200).json(null);
+    }
     res.status(200).json(productsCart.cart);
   } catch (error) {}
 };

@@ -29,7 +29,7 @@ const register = async (req, res) => {
         password:passwordBcrypt
     })
     accountSaved.save()
-    res.status(200).json({register:'success',username,email,accessToken})
+    res.status(200).json({_id:accountSaved._id,register:'success',username,email,accessToken})
   } catch (error) {
       console.log(error.message)
   }
