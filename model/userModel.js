@@ -31,6 +31,10 @@ const orderSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  date:{
+    type:Date,
+    default:Date.now()
+  }
 });
 const inforSchema = Mongoose.Schema({
   username: {

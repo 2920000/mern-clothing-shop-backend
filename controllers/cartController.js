@@ -150,9 +150,22 @@ const updateCartProductAmountFromDatabase = async (req, res) => {
     console.log(error);
   }
 };
+
+const clearCart=async(req,res)=>{
+  const userId=req.body.userId
+  CartModel.updateOne({
+    _id:userId
+  },{
+    $set:{cart:[]}
+  },(err)=>{
+   if(err) throw err
+  })
+res.status(200).json('cleared')
+}
 module.exports = {
   addCartToDatabase,
   getCartToDatabase,
   removeCartProductFromDatabase,
   updateCartProductAmountFromDatabase,
+  clearCart
 };
