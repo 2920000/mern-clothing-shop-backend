@@ -54,11 +54,11 @@ const createProduct = async (req, res) => {
     size,
     gender,
     type,
-    collection
+    collection,
   } = req.body;
   const sub_imageArray = sub_image.split(",");
   const sizeArray = size.split(",");
-  const collectionArray=collection.split(",")
+  const collectionArray = collection.split(",");
   const savedProduct = await new ProductModel({
     title,
     price,
@@ -75,8 +75,7 @@ const createProduct = async (req, res) => {
     size: sizeArray,
     gender,
     type,
-    belongs_to_collection:collectionArray
-
+    belongs_to_collection: collectionArray,
   });
   try {
     savedProduct.save();
@@ -209,46 +208,41 @@ const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
   const page = req.query.page;
   const sort = req.query.sort;
+  let sortInMongodb = { arrive_time: -1 };
   try {
     const productsByCollection = await ProductModel.find({
       belongs_to_collection: collection,
     });
-    let productsByCollectionByQuery;
-    productsByCollectionByQuery = await ProductModel.find({
-      belongs_to_collection: collection,
-      ...req.query,
-    }).sort({ arrive_time: -1 });
     if (sort) {
       switch (sort) {
         case "asc-price":
-          productsByCollectionByQuery = await ProductModel.find({
-            belongs_to_collection: collection,
-            ...req.query,
-          }).sort({ price: 1 });
+          sortInMongodb = { price: 1 };
           break;
         case "desc-price":
-          productsByCollectionByQuery = await ProductModel.find({
-            belongs_to_collection: collection,
-            ...req.query,
-          }).sort({ price: -1 });
+          sortInMongodb = { price: -1 };
           break;
         case "best-selling":
-          productsByCollectionByQuery = await ProductModel.find({
-            belongs_to_collection: collection,
-            ...req.query,
-          }).sort({ sold: -1 });
+          sortInMongodb = { sold: -1 };
           break;
         case "new-to-old":
-          productsByCollectionByQuery = await ProductModel.find({
-            belongs_to_collection: collection,
-            ...req.query,
-          }).sort({ price: -1 });
+          sortInMongodb = { arrive_time: -1 };
           break;
-
         default:
       }
     }
 
+    let productsByCollectionByQuery;
+    productsByCollectionByQuery = await ProductModel.find({
+      belongs_to_collection: collection,
+      ...req.query,
+    }).sort(sortInMongodb);
+    //test - tiền trong khoảng
+    //  let x=await ProductModel.find({
+    //    price:{$gt:200000,$lt:400000}
+    //  })
+    //test
+
+   
     let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
       _id: product._id,
       title: product.title,

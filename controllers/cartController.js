@@ -37,6 +37,7 @@ const addNewProduct = async (userId, productData) => {
 };
 const addCartToDatabase = async (req, res) => {
   const { productData, userId, cartDataFromLocal } = req.body.payload;
+  console.log(req.body)
   try {
     const cartExisting = await CartModel.findById(userId);
     const allProductsInCart = cartExisting?.cart;
@@ -67,7 +68,7 @@ const addCartToDatabase = async (req, res) => {
         cart: cartDataFromLocal || [],
       });
       cartSaved.save();
-      return;
+      return res.status(200).json(cartSaved)
     }
     if (cartDataFromLocal) {
       for(let localProduct of cartDataFromLocal){
@@ -84,6 +85,7 @@ const addCartToDatabase = async (req, res) => {
 
         if (!checkProductExisting) {
            res.json(await addNewProduct(userId, localProduct));
+           continue
         }
         updateAmount(productWantToUpdate, localProduct, userId)
          res.status(200).json('updated')
