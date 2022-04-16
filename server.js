@@ -9,6 +9,7 @@ const loginRouter=require('./routes/loginRoute')
 const accountRouter=require('./routes/accountRoute')
 const cartRouter=require('./routes/cartRoute')
 const userRouter=require('./routes/userRoute')
+const reviewsRouter=require('./routes/reviewsRoute')
 dotenv.config()
 const app =express()
 
@@ -22,7 +23,7 @@ app.use('/products',productRouter)
 app.use('/account',accountRouter)
 app.use('/cart',cartRouter)
 app.use('/user',userRouter)
-
+app.use('/reviews',reviewsRouter)
 
 
 const PORT=process.env.PORT||5000

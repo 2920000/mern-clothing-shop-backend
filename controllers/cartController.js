@@ -37,7 +37,6 @@ const addNewProduct = async (userId, productData) => {
 };
 const addCartToDatabase = async (req, res) => {
   const { productData, userId, cartDataFromLocal } = req.body.payload;
-  console.log(req.body)
   try {
     const cartExisting = await CartModel.findById(userId);
     const allProductsInCart = cartExisting?.cart;

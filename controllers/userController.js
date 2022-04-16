@@ -3,7 +3,6 @@ const UserModel = require("../model/userModel");
 
 const createUser = async (req, res) => {
   const { userId, username } = req.body.payload;
-  console.log(req.body.payload);
   try {
     await UserModel({
       _id: userId,
@@ -12,6 +11,7 @@ const createUser = async (req, res) => {
       },
       orders: [],
       shipping_infor: {},
+      productsReviewd: [],
     }).save();
   } catch (error) {
     console.log(error);
@@ -41,15 +41,15 @@ const updateShippingInfor = async (req, res) => {
 const addOrders = async (req, res) => {
   const { orders, userId } = req.body.payload;
   try {
-     UserModel.updateOne(
+    UserModel.updateOne(
       {
         _id: userId,
       },
       {
         $push: { orders: { $each: orders } },
-      },(err)=>{
-          if(err) throw err
-
+      },
+      (err) => {
+        if (err) throw err;
       }
     );
     res.status(200).json("ordered");
@@ -57,16 +57,17 @@ const addOrders = async (req, res) => {
     console.log(error);
   }
 };
-const getOrders=async(req,res)=>{
-    const {userId}=req.params
-    const user= await UserModel.findById(userId)
-    const orders=user.orders
-    res.status(200).json(orders)
-}
+const getOrders = async (req, res) => {
+  const { userId } = req.params;
+  const user = await UserModel.findById(userId);
+  const orders = user.orders;
+  const productsReviewed = user.productsReviewed;
+  res.status(200).json({ orders, productsReviewed });
+};
 module.exports = {
   createUser,
   getShippingInfor,
   updateShippingInfor,
   addOrders,
-  getOrders
+  getOrders,
 };
