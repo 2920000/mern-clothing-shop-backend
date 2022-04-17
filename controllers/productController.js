@@ -140,8 +140,6 @@ const updateProductForm = async (req, res) => {
 // xóa sản phẩm theo Id
 const deleteProduct = async (req, res) => {
   const productId = req.params.productId;
-  console.log(productId);
-
   try {
     await ProductModel.findByIdAndDelete(productId);
     res.redirect("/products/management");

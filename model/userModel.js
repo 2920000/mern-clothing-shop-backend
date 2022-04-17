@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Mongoose = require("mongoose");
-const {reviewSchema}=require('./reviewsModel')
+const {productRating}=require('./ratingsModel')
 const orderSchema = mongoose.Schema({
   productId: {
     type: String,
@@ -62,13 +62,7 @@ const shipping_infor = Mongoose.Schema({
     type: String,
   },
 });
-const productsReviewed = Mongoose.Schema({
-  _id: {
-    type: mongoose.Types.ObjectId,
-    require: true,
-  },
-  review:reviewSchema
-});
+
 const userSchema = Mongoose.Schema({
   _id: {
     type: mongoose.Types.ObjectId,
@@ -77,7 +71,7 @@ const userSchema = Mongoose.Schema({
   infor: inforSchema,
   orders: [orderSchema],
   shipping_infor: shipping_infor,
-  productsReviewed: [productsReviewed],
+  productRatings: [productRating],
 });
 
 module.exports = Mongoose.model("users", userSchema);

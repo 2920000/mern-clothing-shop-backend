@@ -19,7 +19,6 @@ const register = async (req, res) => {
   const { username, email, password } = req.body.data;
   try {
     const isEmailExisting = await AccountModel.findOne({ email });
-    console.log(isEmailExisting)
     if (isEmailExisting) return res.status(400).json({email:"Email đã tồn tại"});
     const passwordBcrypt = await bcrypt.hash(password, 10);
     const accessToken = jwt.sign({ username, email }, process.env.TOKEN_SECRET);

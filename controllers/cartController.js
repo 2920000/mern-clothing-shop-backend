@@ -16,8 +16,8 @@ const updateAmount = (productWantToUpdate, productData, userId) => {
         "cart.$.amount": productWantToUpdate.amount + productData.amount,
       },
     },
-    (err)=>{
-      if(err) throw err
+    (err) => {
+      if (err) throw err;
     }
   );
 };
@@ -37,68 +37,67 @@ const addNewProduct = async (userId, productData) => {
 };
 const addCartToDatabase = async (req, res) => {
   const { productData, userId, cartDataFromLocal } = req.body.payload;
+
+  const compare = (product) => {
+    return (
+      product.productId === productData.productId &&
+      product.size === productData.size
+    );
+  };
+  const checkExisting = (params) => {
+    return params.some(compare);
+  };
+  const findProduct = (params) => {
+    return params.find(compare);
+  };
+
   try {
     const cartExisting = await CartModel.findById(userId);
     const allProductsInCart = cartExisting?.cart;
 
-    if (cartExisting && !cartDataFromLocal) {
-      const productWantToUpdate = allProductsInCart?.find(
-        (product) =>
-          product.productId === productData.productId &&
-          product.size === productData.size
-      );
-      const checkProductExisting = allProductsInCart.some(
-        (product) =>
-          product.productId === productData.productId &&
-          product.size === productData.size
-      );
+    const isCartExisting = Boolean(cartExisting);
+    const isCartFromLocalExisting = Boolean(cartDataFromLocal);
+   
+    const productWantToUpdate = findProduct(allProductsInCart);
+    const isProductExisting = checkExisting(allProductsInCart);
 
-      if (!checkProductExisting) {
+    if (isCartExisting && !isCartFromLocalExisting) {
+      if (!isProductExisting) {
         return res.json(await addNewProduct(userId, productData));
       }
-
       updateAmount(productWantToUpdate, productData, userId);
-      return res.json('updated')
+      return res.json("updated");
     }
 
-    if ((!cartExisting && cartDataFromLocal) || !cartExisting) {
-      const cartSaved = await CartModel({
+    if (!isCartExisting) {
+      const savedCart = await CartModel({
         _id: userId,
-        cart: cartDataFromLocal || [],
+        cart: cartDataFromLocal || [productData],
       });
-      cartSaved.save();
-      return res.status(200).json(cartSaved)
+      savedCart.save();
+      return res.status(200).json(savedCart);
     }
-    if (cartDataFromLocal) {
-      for(let localProduct of cartDataFromLocal){
-        const checkProductExisting = allProductsInCart.some(
-          (product) =>
-            product.productId === localProduct.productId &&
-            product.size === localProduct.size
-        );
-        const productWantToUpdate = allProductsInCart?.find(
-          (productInCart) =>
-            productInCart.productId === localProduct.productId &&
-            productInCart.size === localProduct.size
-        );
 
-        if (!checkProductExisting) {
-           res.json(await addNewProduct(userId, localProduct));
-           continue
+    if (isCartFromLocalExisting) {
+      for (let localProduct of cartDataFromLocal) {
+        if (!isProductExisting) {
+          res.json(await addNewProduct(userId, localProduct));
+          continue;
         }
-        updateAmount(productWantToUpdate, localProduct, userId)
-         res.status(200).json('updated')
+        updateAmount(productWantToUpdate, localProduct, userId);
+        res.status(200).json("updated");
       }
     }
   } catch (error) {
     console.log(error.message);
   }
 };
+
 const getCartToDatabase = async (req, res) => {
   const _id = mongoose.Types.ObjectId(req.params.userId);
   try {
     const productsCart = await CartModel.findById(_id);
-    if(productsCart.cart.length===0) {
+    if (productsCart.cart.length === 0) {
       return res.status(200).json(null);
     }
     res.status(200).json(productsCart.cart);
@@ -123,6 +122,7 @@ const removeCartProductFromDatabase = async (req, res) => {
     );
   } catch (error) {}
 };
+
 const updateCartProductAmountFromDatabase = async (req, res) => {
   const userId = mongoose.Types.ObjectId(req.body.payload.userId);
   const productId = req.body.payload.productId;
@@ -152,21 +152,25 @@ const updateCartProductAmountFromDatabase = async (req, res) => {
   }
 };
 
-const clearCart=async(req,res)=>{
-  const userId=req.body.userId
-  CartModel.updateOne({
-    _id:userId
-  },{
-    $set:{cart:[]}
-  },(err)=>{
-   if(err) throw err
-  })
-res.status(200).json('cleared')
-}
+const clearCart = async (req, res) => {
+  const userId = req.body.userId;
+  CartModel.updateOne(
+    {
+      _id: userId,
+    },
+    {
+      $set: { cart: [] },
+    },
+    (err) => {
+      if (err) throw err;
+    }
+  );
+  res.status(200).json("cleared");
+};
 module.exports = {
   addCartToDatabase,
   getCartToDatabase,
   removeCartProductFromDatabase,
   updateCartProductAmountFromDatabase,
-  clearCart
+  clearCart,
 };

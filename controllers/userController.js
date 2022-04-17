@@ -61,8 +61,8 @@ const getOrders = async (req, res) => {
   const { userId } = req.params;
   const user = await UserModel.findById(userId);
   const orders = user.orders;
-  const productsReviewed = user.productsReviewed;
-  res.status(200).json({ orders, productsReviewed });
+  const productRatings= user.productRatings;
+  res.status(200).json({ orders, productRatings });
 };
 module.exports = {
   createUser,
