@@ -7,7 +7,7 @@ const getRatings = async (req, res) => {
     const productRatingsInfor = await ProductRatingsModel.findOne({
       productId,
     });
-    res.status(200).json([...productRatingsInfor.productRatings]);
+    res.status(200).json([...productRatingsInfor?.productRatings]);
   } catch (error) {
     console.log(error);
   }

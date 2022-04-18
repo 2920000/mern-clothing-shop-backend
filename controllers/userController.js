@@ -25,18 +25,22 @@ const getShippingInfor = async (req, res) => {
 };
 const updateShippingInfor = async (req, res) => {
   const { userId, fullName, phoneNumber, address } = req.body.payload;
-  const shippingInforUpdated = await UserModel.findByIdAndUpdate(
-    { _id: userId },
-    {
-      shipping_infor: {
-        fullName,
-        phoneNumber,
-        address,
+  try {
+    const shippingInforUpdated = await UserModel.findByIdAndUpdate(
+      { _id: userId },
+      {
+        shipping_infor: {
+          fullName,
+          phoneNumber,
+          address,
+        },
       },
-    },
-    { new: true }
-  );
-  res.status(200).json(shippingInforUpdated);
+      { new: true }
+    );
+    res.status(200).json(shippingInforUpdated);
+  } catch (error) {
+    res.status(400).json('error')
+  }
 };
 const addOrders = async (req, res) => {
   const { orders, userId } = req.body.payload;

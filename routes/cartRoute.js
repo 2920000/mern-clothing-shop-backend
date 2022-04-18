@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const {
-  addCartToDatabase,
-  getCartToDatabase,
+  addCartProductToDatabase,
+  getCartFromDatabase,
   removeCartProductFromDatabase,
   updateCartProductAmountFromDatabase,
   clearCart,
 } = require("../controllers/cartController");
 
-router.post("/add", addCartToDatabase);
-router.get("/get/:userId", getCartToDatabase);
+router.post("/add", addCartProductToDatabase);
+router.get("/get/:userId", getCartFromDatabase);
 router.post("/remove", removeCartProductFromDatabase);
 router.post("/update", updateCartProductAmountFromDatabase);
 router.post("/clearCart", clearCart);
