@@ -55,7 +55,7 @@ const addCartProductToDatabase = async (req, res) => {
 
   try {
     const cartExisting = await CartModel.findById(userId);
-    const allProductsInCart = cartExisting.cart;
+    const allProductsInCart = cartExisting?.cart;
 
     const isCartExisting = Boolean(cartExisting);
     const isCartFromLocalExisting = Boolean(cartDataFromLocal);

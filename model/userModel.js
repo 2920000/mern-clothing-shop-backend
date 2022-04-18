@@ -51,17 +51,6 @@ const inforSchema = Mongoose.Schema({
     type: Number,
   },
 });
-const shipping_infor = Mongoose.Schema({
-  fullName: {
-    type: String,
-  },
-  phoneNumber: {
-    type: Number,
-  },
-  address: {
-    type: String,
-  },
-});
 
 const userSchema = Mongoose.Schema({
   _id: {
@@ -70,7 +59,10 @@ const userSchema = Mongoose.Schema({
   },
   infor: inforSchema,
   orders: [orderSchema],
-  shipping_infor: shipping_infor,
+  shipping_infor: {
+    type:Object,
+    default:null
+  },
   productRatings: [productRating],
 });
 
