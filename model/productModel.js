@@ -4,6 +4,10 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  slug: {
+    type: String,
+    require: true,
+  },
   price: {
     type: Number,
     require: true,
@@ -12,13 +16,13 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  category:{
+  category: {
     type: String,
     require: true,
   },
-  type:{
-    type:String,
-    require:true,
+  type: {
+    type: String,
+    require: true,
   },
   image: {
     type: String,
@@ -34,38 +38,37 @@ const productSchema = mongoose.Schema({
   brand: {
     type: String,
   },
-  status:{
-    type:String,
-    require:true
+  status: {
+    type: String,
+    require: true,
   },
-  sub_image:{
-    type:Array,
-    require:true,
+  sub_image: {
+    type: Array,
+    require: true,
   },
-  color:{
-    type:String,
-    require:true
+  color: {
+    type: String,
+    require: true,
   },
-  size:{
-    type:Array,
-    require:true
+  size: {
+    type: Array,
+    require: true,
   },
-  gender:{
-    type:String,
-    require:true
+  gender: {
+    type: String,
+    require: true,
   },
-  sale:{
-   type:Number,
-   default:0
+  sale: {
+    type: Number,
+    default: 0,
   },
-  belongs_to_collection:{
-   type:Array,
-   require:true
-  }
-  ,
-  arrive_time:{
-    type:Date,
-    default:new Date()
-  }
+  belongs_to_collection: {
+    type: Array,
+    require: true,
+  },
+  arrive_time: {
+    type: Date,
+    default: new Date(),
+  },
 });
 module.exports = mongoose.model("Product", productSchema);

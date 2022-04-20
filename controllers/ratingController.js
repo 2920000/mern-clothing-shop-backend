@@ -2,10 +2,10 @@ const { default: mongoose } = require("mongoose");
 const { ProductRatingsModel } = require("../model/ratingsModel");
 const UserModel = require("../model/userModel");
 const getRatings = async (req, res) => {
-  const productId = req.params.productId;
+  const slug = req.params.slug;
   try {
     const productRatingsInfor = await ProductRatingsModel.findOne({
-      productId,
+      slug,
     });
     res.status(200).json([...productRatingsInfor?.productRatings]);
   } catch (error) {

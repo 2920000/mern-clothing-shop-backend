@@ -33,7 +33,7 @@ const orderSchema = mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
 });
 const inforSchema = Mongoose.Schema({

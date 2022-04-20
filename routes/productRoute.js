@@ -2,7 +2,6 @@ const express = require("express");
 const { auth } = require("../middlewares/auth");
 const router = express.Router();
 const {
-  getProductById,
   createProduct,
   createProductForm,
   getAllProducts,
@@ -14,6 +13,7 @@ const {
   getProductsByTypeAndCategory,
   getProductBySearch,
   getProductByCollection,
+  getProductBySlug,
 } = require("../controllers/productController");
 
 router.get("/", products);
@@ -23,7 +23,7 @@ router.get("/updateProductForm/:productId", updateProductForm);
 router.get("/management", getAllProducts);
 router.get("/:status", getProductsByStattus);
 router.get("/collection/:collection",getProductByCollection);
-router.get("/detail/:productId", getProductById);
+router.get("/detail/:slug", getProductBySlug);
 router.get("/:category/:type", getProductsByTypeAndCategory);
 router.post("/", createProduct);
 

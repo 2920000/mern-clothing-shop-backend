@@ -22,11 +22,11 @@ const products = async (req, res) => {
 };
 
 // lấy sản phẩm theo Id
-const getProductById = async (req, res) => {
-  const productId = req.params.productId;
+const getProductBySlug = async (req, res) => {
+  const slug = req.params.slug;
   try {
-    const productById = await ProductModel.findById(productId);
-    res.json(productById);
+    const productBySlug = await ProductModel.findOne({ slug });
+    res.json(productBySlug);
   } catch (error) {
     console.log(error.message);
   }
@@ -88,8 +88,9 @@ const createProduct = async (req, res) => {
 //update sản phẩm
 const updateProduct = async (req, res) => {
   const productId = req.params.productId;
-  const {
+  let {
     title,
+    slug,
     price,
     description,
     category,
@@ -105,23 +106,25 @@ const updateProduct = async (req, res) => {
     gender,
     type,
   } = req.body;
-  const sub_imageArray = sub_image.split(",");
-  const sizeArray = size.split(",");
+  sub_image = sub_image.split(",");
+  size = size.split(",");
+  slug = slug.trim();
   try {
     await ProductModel.findByIdAndUpdate(productId, {
       title,
+      slug,
       price,
       description,
       category,
       sale,
       image,
-      sub_image: sub_imageArray,
+      sub_image,
       sold,
       brand,
       origin,
       status,
       color,
-      size: sizeArray,
+      size,
       gender,
       type,
     });
@@ -196,12 +199,15 @@ const getProductBySearch = async (req, res) => {
       price: product.price,
       brand: product.brand,
       image: product.image,
+      slug: product.slug,
     }));
-    res.json(newProducts);
+
+    res.status(200).json(newProducts);
   } catch (error) {
     console.log(error.message);
   }
 };
+
 const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
   const page = req.query.page;
@@ -240,7 +246,6 @@ const getProductByCollection = async (req, res) => {
     //  })
     //test
 
-   
     let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
       _id: product._id,
       title: product.title,
@@ -250,6 +255,7 @@ const getProductByCollection = async (req, res) => {
       sale: product.sale,
       subImage: product.sub_image[0],
       color: product.color,
+      slug: product.slug,
     }));
 
     const priceQuery = req.query.pricess;
@@ -318,7 +324,7 @@ const getProductByCollection = async (req, res) => {
 };
 module.exports = {
   getAllProducts,
-  getProductById,
+  getProductBySlug,
   createProductForm,
   createProduct,
   products,
