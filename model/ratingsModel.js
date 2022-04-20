@@ -34,9 +34,13 @@ const productRatingsSchema = mongoose.Schema({
     require: true,
   },
   productRatings: [productRating],
+  slug: {
+    type: String,
+    require: true,
+  }
 });
 const ProductRatingsModel = mongoose.model(
   "product_ratings",
   productRatingsSchema
 );
-module.exports = { productRating, ProductRatingsModel};
+module.exports = { productRating, ProductRatingsModel };

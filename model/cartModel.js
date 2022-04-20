@@ -9,6 +9,10 @@ const cartProductSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  slug: {
+    type: String,
+    require: true,
+  },
   image: {
     type: String,
     require: true,

@@ -1,12 +1,16 @@
 const { default: mongoose } = require("mongoose");
 const Mongoose = require("mongoose");
-const {productRating}=require('./ratingsModel')
+const { productRating } = require("./ratingsModel");
 const orderSchema = mongoose.Schema({
   productId: {
     type: String,
     require: true,
   },
   title: {
+    type: String,
+    require: true,
+  },
+  slug: {
     type: String,
     require: true,
   },
@@ -60,8 +64,8 @@ const userSchema = Mongoose.Schema({
   infor: inforSchema,
   orders: [orderSchema],
   shipping_infor: {
-    type:Object,
-    default:null
+    type: Object,
+    default: null,
   },
   productRatings: [productRating],
 });

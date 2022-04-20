@@ -16,6 +16,7 @@ const createRating = async (req, res) => {
   const ratingData = req.body.ratingData;
   const userInfor = ratingData.userInfor;
   const _id = ratingData.rating.productRatingInfor._id;
+  const slug=ratingData.rating.productRatingInfor.slug
   const productId = ratingData.rating.productRatingInfor.productId;
   try {
     const productRatingsInfor = await ProductRatingsModel.findOne({
@@ -60,6 +61,7 @@ const createRating = async (req, res) => {
     } else {
       const savedRatings = await ProductRatingsModel({
         productId,
+        slug,
         productRatings: [
           {
             _id,
