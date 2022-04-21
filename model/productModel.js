@@ -20,6 +20,10 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  tags:{
+    type:Array,
+    require:true
+  },
   type: {
     type: String,
     require: true,

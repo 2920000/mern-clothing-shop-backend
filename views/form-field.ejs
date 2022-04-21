@@ -129,10 +129,21 @@
   <label for="collection" class="form-label">Bộ sưu tập</label>
   <input
     required
-    value="<%- product.brand  %>"
+    value="<%- product.belongs_to_collection  %>"
     type="text"
     name="collection"
     id="collection"
+    class="form-control"
+  />
+</div>
+<div class="form-group mb-3">
+  <label for="tags" class="form-label">Tags</label>
+  <input
+    required
+    value="<%- product.tags  %>"
+    type="text"
+    name="tags"
+    id="tags"
     class="form-control"
   />
 </div>

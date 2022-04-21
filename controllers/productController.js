@@ -38,8 +38,9 @@ const createProductForm = async (req, res) => {
 
 // đưa dữ liệu vào mongodb
 const createProduct = async (req, res) => {
-  const {
+  let {
     title,
+    slug,
     price,
     description,
     category,
@@ -55,27 +56,33 @@ const createProduct = async (req, res) => {
     gender,
     type,
     collection,
+    tags,
   } = req.body;
-  const sub_imageArray = sub_image.split(",");
-  const sizeArray = size.split(",");
-  const collectionArray = collection.split(",");
+
+  sub_image = sub_image.split(",");
+  size = size.split(",");
+  collection = collection.split(",");
+  tags = tags.split(",");
+
   const savedProduct = await new ProductModel({
     title,
+    slug,
     price,
     description,
     category,
     sale,
     image,
-    sub_image: sub_imageArray,
+    sub_image,
     sold,
     brand,
     origin,
     status,
     color,
-    size: sizeArray,
+    size,
     gender,
     type,
-    belongs_to_collection: collectionArray,
+    belongs_to_collection: collection,
+    tags,
   });
   try {
     savedProduct.save();
@@ -105,10 +112,12 @@ const updateProduct = async (req, res) => {
     size,
     gender,
     type,
+    tags,
   } = req.body;
   sub_image = sub_image.split(",");
   size = size.split(",");
   slug = slug.trim();
+  tags = tags.split(",");
   try {
     await ProductModel.findByIdAndUpdate(productId, {
       title,
@@ -127,6 +136,7 @@ const updateProduct = async (req, res) => {
       size,
       gender,
       type,
+      tags,
     });
     res.redirect("/products/management");
   } catch (error) {
@@ -322,6 +332,19 @@ const getProductByCollection = async (req, res) => {
     res.json({ pageArray, total: allProductsNumber, brandData, colourData });
   } catch (error) {}
 };
+const getProductByTags = async (req, res) => {
+  const productId = req.params.productId;
+  const product = await ProductModel.findById(productId);
+  const tags = product.tags;
+  const matchedProducts = [];
+  for (let tag of tags) {
+    const productsByTags = await ProductModel.findOne({ tags: tag });
+    if (productsByTags) {
+      matchedProducts.push({ ...productsByTags._doc });
+    }
+  }
+  res.status(200).json(matchedProducts)
+};
 module.exports = {
   getAllProducts,
   getProductBySlug,
@@ -335,4 +358,5 @@ module.exports = {
   getProductsByTypeAndCategory,
   getProductBySearch,
   getProductByCollection,
+  getProductByTags,
 };
