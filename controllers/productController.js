@@ -261,7 +261,7 @@ const getProductByCollection = async (req, res) => {
       image: product.image,
       brand: product.brand,
       sale: product.sale,
-      subImage: product.sub_image,
+      sub_image: product.sub_image,
       color: product.color,
       slug: product.slug,
     }));
