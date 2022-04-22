@@ -220,10 +220,12 @@ const getProductByCollection = async (req, res) => {
   const sort = req.query.sort;
   let sortInMongodb = { arrive_time: -1 };
   const priceRange = req.query.price && req.query.price.split(",");
-  req.query = req.query.price && {
-    ...req.query,
-    price: { $gt: priceRange[0], $lt: priceRange[1] },
-  };
+  if (req.query.price) {
+    req.query = req.query.price && {
+      ...req.query,
+      price: { $gt: priceRange[0], $lt: priceRange[1] },
+    };
+  }
   try {
     const productsByCollection = await ProductModel.find({
       belongs_to_collection: collection,
@@ -251,7 +253,6 @@ const getProductByCollection = async (req, res) => {
       belongs_to_collection: collection,
       ...req.query,
     }).sort(sortInMongodb);
-    
 
     let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
       _id: product._id,
@@ -264,7 +265,6 @@ const getProductByCollection = async (req, res) => {
       color: product.color,
       slug: product.slug,
     }));
-
 
     const brandData = [];
     const colourData = [];
@@ -321,9 +321,11 @@ const getProductByTags = async (req, res) => {
   const tags = product.tags;
   const matchedProducts = [];
   for (let tag of tags) {
-    const productsByTags = await ProductModel.find({ tags: tag }).sort({arrive_time:-1});
+    const productsByTags = await ProductModel.find({ tags: tag }).sort({
+      arrive_time: -1,
+    });
     if (productsByTags) {
-      matchedProducts.push( ...productsByTags);
+      matchedProducts.push(...productsByTags);
     }
   }
   res.status(200).json(matchedProducts);
