@@ -11,6 +11,16 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getAllProductsToClient = async (req, res) => {
+  try {
+    const allProducts = await ProductModel.find()
+      .sort({ arrive_time: -1 })
+      .limit(10);
+    res.status(200).json(allProducts);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 // trả về json
 const products = async (req, res) => {
   try {
@@ -21,7 +31,7 @@ const products = async (req, res) => {
   }
 };
 
-// lấy sản phẩm theo Id
+// lấy sản phẩm theo slug
 const getProductBySlug = async (req, res) => {
   const slug = req.params.slug;
   try {
@@ -161,20 +171,6 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-const getProductsByStattus = async (req, res) => {
-  const status = req.params.status;
-  try {
-    const productsByStatus = await ProductModel.find({ status });
-    const newProductsByStatus = productsByStatus.map((product) => ({
-      _id: product._id,
-      title: product.title,
-      price: product.price,
-      image: product.image,
-    }));
-    res.json(newProductsByStatus);
-  } catch (error) {}
-};
-
 const getProductsByTypeAndCategory = async (req, res) => {
   const category = req.params.category;
   const type = req.params.type;
@@ -223,6 +219,11 @@ const getProductByCollection = async (req, res) => {
   const page = req.query.page;
   const sort = req.query.sort;
   let sortInMongodb = { arrive_time: -1 };
+  const priceRange = req.query.price && req.query.price.split(",");
+  req.query = req.query.price && {
+    ...req.query,
+    price: { $gt: priceRange[0], $lt: priceRange[1] },
+  };
   try {
     const productsByCollection = await ProductModel.find({
       belongs_to_collection: collection,
@@ -250,11 +251,7 @@ const getProductByCollection = async (req, res) => {
       belongs_to_collection: collection,
       ...req.query,
     }).sort(sortInMongodb);
-    //test - tiền trong khoảng
-    //  let x=await ProductModel.find({
-    //    price:{$gt:200000,$lt:400000}
-    //  })
-    //test
+    
 
     let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
       _id: product._id,
@@ -268,21 +265,6 @@ const getProductByCollection = async (req, res) => {
       slug: product.slug,
     }));
 
-    const priceQuery = req.query.pricess;
-    if (priceQuery) {
-      const priceArray = priceQuery.split(",");
-      const firstPrice = Number(priceArray[0]);
-      const secondPrice = Number(priceArray[1]);
-      newProductsByQuery = newProductsByQuery.filter((product) => {
-        if (firstPrice === 600000 && priceArray.length < 2) {
-          return product.price < 600000;
-        } else if (firstPrice === 1200000 && priceArray.length < 2) {
-          return product.price > 1200000;
-        } else {
-          return product.price > firstPrice && product.price < secondPrice;
-        }
-      });
-    }
 
     const brandData = [];
     const colourData = [];
@@ -332,19 +314,21 @@ const getProductByCollection = async (req, res) => {
     res.json({ pageArray, total: allProductsNumber, brandData, colourData });
   } catch (error) {}
 };
+
 const getProductByTags = async (req, res) => {
   const productId = req.params.productId;
   const product = await ProductModel.findById(productId);
   const tags = product.tags;
   const matchedProducts = [];
   for (let tag of tags) {
-    const productsByTags = await ProductModel.findOne({ tags: tag });
+    const productsByTags = await ProductModel.find({ tags: tag }).sort({arrive_time:-1});
     if (productsByTags) {
-      matchedProducts.push({ ...productsByTags._doc });
+      matchedProducts.push( ...productsByTags);
     }
   }
-  res.status(200).json(matchedProducts)
+  res.status(200).json(matchedProducts);
 };
+
 module.exports = {
   getAllProducts,
   getProductBySlug,
@@ -354,9 +338,9 @@ module.exports = {
   updateProduct,
   deleteProduct,
   updateProductForm,
-  getProductsByStattus,
   getProductsByTypeAndCategory,
   getProductBySearch,
   getProductByCollection,
   getProductByTags,
+  getAllProductsToClient,
 };

@@ -15,6 +15,7 @@ const {
   getProductByCollection,
   getProductBySlug,
   getProductByTags,
+  getAllProductsToClient,
 } = require("../controllers/productController");
 
 router.get("/", products);
@@ -23,7 +24,7 @@ router.get("/createProduct", createProductForm);
 router.get("/updateProductForm/:productId", updateProductForm);
 router.get("/management", getAllProducts);
 router.get("/tags/:productId", getProductByTags);
-router.get("/:status", getProductsByStattus);
+router.get("/all",getAllProductsToClient)
 router.get("/collection/:collection", getProductByCollection);
 router.get("/detail/:slug", getProductBySlug);
 router.get("/:category/:type", getProductsByTypeAndCategory);

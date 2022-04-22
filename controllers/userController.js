@@ -35,7 +35,7 @@ const updateShippingInfor = async (req, res) => {
       { _id: userId },
       {
         $set: {
-          'shipping_infor': {
+          shipping_infor: {
             fullName,
             phoneNumber,
             address,
@@ -70,10 +70,14 @@ const addOrders = async (req, res) => {
 };
 const getOrders = async (req, res) => {
   const { userId } = req.params;
+  const newOrders = [];
   const user = await UserModel.findById(userId);
   const orders = user.orders;
+  orders.forEach((order) => {
+    newOrders.unshift(order);
+  });
   const productRatings = user.productRatings;
-  res.status(200).json({ orders, productRatings });
+  res.status(200).json({ orders: newOrders, productRatings });
 };
 module.exports = {
   createUser,
