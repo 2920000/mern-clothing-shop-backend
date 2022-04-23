@@ -216,8 +216,8 @@ const getProductBySearch = async (req, res) => {
 
 const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
-  const page = req.query.page;
-  const sort = req.query.sort;
+  const { page = 1, limit = 10, sort = "new-to-old" } = req.query;
+
   let sortInMongodb = { arrive_time: -1 };
   const priceRange = req.query.price && req.query.price.split(",");
   if (req.query.price) {
@@ -226,6 +226,7 @@ const getProductByCollection = async (req, res) => {
       price: { $gt: priceRange[0], $lt: priceRange[1] },
     };
   }
+
   try {
     const productsByCollection = await ProductModel.find({
       belongs_to_collection: collection,
@@ -252,7 +253,10 @@ const getProductByCollection = async (req, res) => {
     productsByCollectionByQuery = await ProductModel.find({
       belongs_to_collection: collection,
       ...req.query,
-    }).sort(sortInMongodb);
+    })
+      .sort(sortInMongodb)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
       _id: product._id,
@@ -301,17 +305,13 @@ const getProductByCollection = async (req, res) => {
         }
       }
     }
-
-    // phân trang
-    let pageArray = [];
-    const allProductsNumber = newProductsByQuery.length;
-    for (let i = 0; i < allProductsNumber; i++) {
-      if (i < page * 9 && i >= 9 * (page - 1)) {
-        pageArray.push(newProductsByQuery[i]);
-      }
-    }
-
-    res.json({ pageArray, total: allProductsNumber, brandData, colourData });
+    
+    res.json({
+      pageArray: newProductsByQuery,
+      total: newProductsByQuery.length,
+      brandData,
+      colourData,
+    });
   } catch (error) {}
 };
 
