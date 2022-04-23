@@ -216,7 +216,7 @@ const getProductBySearch = async (req, res) => {
 
 const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
-  const { page = 1, limit = 10, sort = "new-to-old" } = req.query;
+  const { page = 1, limit = 6, sort = "new-to-old" } = req.query;
 
   let sortInMongodb = { arrive_time: -1 };
   const priceRange = req.query.price && req.query.price.split(",");
