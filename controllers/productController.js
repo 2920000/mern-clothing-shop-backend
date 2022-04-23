@@ -216,7 +216,7 @@ const getProductBySearch = async (req, res) => {
 
 const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
-  const { page = 1, limit = 6, sort = "new-to-old" } = req.query;
+  const { page = 1, limit = 9, sort = "new-to-old" } = req.query;
 
   let sortInMongodb = { arrive_time: -1 };
   const priceRange = req.query.price && req.query.price.split(",");
@@ -253,22 +253,15 @@ const getProductByCollection = async (req, res) => {
     productsByCollectionByQuery = await ProductModel.find({
       belongs_to_collection: collection,
       ...req.query,
+    }).sort(sortInMongodb);
+
+    const productsLimit = await ProductModel.find({
+      belongs_to_collection: collection,
+      ...req.query,
     })
       .sort(sortInMongodb)
       .skip((page - 1) * limit)
       .limit(limit);
-
-    let newProductsByQuery = productsByCollectionByQuery.map((product) => ({
-      _id: product._id,
-      title: product.title,
-      price: product.price,
-      image: product.image,
-      brand: product.brand,
-      sale: product.sale,
-      sub_image: product.sub_image,
-      color: product.color,
-      slug: product.slug,
-    }));
 
     const brandData = [];
     const colourData = [];
@@ -305,10 +298,10 @@ const getProductByCollection = async (req, res) => {
         }
       }
     }
-    
+
     res.json({
-      pageArray: newProductsByQuery,
-      total: newProductsByQuery.length,
+      pageArray: productsLimit,
+      total: productsByCollectionByQuery.length,
       brandData,
       colourData,
     });
