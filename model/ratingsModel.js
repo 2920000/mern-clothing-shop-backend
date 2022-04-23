@@ -25,7 +25,7 @@ const productRating = {
   },
   created_at: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
 };
 const productRatingsSchema = mongoose.Schema({

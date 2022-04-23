@@ -6,7 +6,7 @@ const getRatings = async (req, res) => {
   try {
     const productRatingsInfor = await ProductRatingsModel.findOne({
       slug,
-    });
+    }).sort({created_at:1})
     res.status(200).json([...productRatingsInfor?.productRatings]);
   } catch (error) {
     console.log(error);
