@@ -216,17 +216,22 @@ const getProductBySearch = async (req, res) => {
 
 const getProductByCollection = async (req, res) => {
   const { collection } = req.params;
-  const { page = 1, limit = 9, sort = "new-to-old" } = req.query;
+  const { page = 1, limit = 9, sort = "new-to-old", size } = req.query;
 
   let sortInMongodb = { arrive_time: -1 };
   const priceRange = req.query.price && req.query.price.split(",");
   if (req.query.price) {
-    req.query = req.query.price && {
+    req.query = {
       ...req.query,
       price: { $gt: priceRange[0], $lt: priceRange[1] },
     };
   }
-
+  if (req.query.size) {
+    req.query = {
+      ...req.query,
+      size: { $in: req.query.size },
+    };
+  }
   try {
     const productsByCollection = await ProductModel.find({
       belongs_to_collection: collection,
