@@ -265,6 +265,13 @@ const getProductByCollection = async (req, res) => {
 
     const brandData = [];
     const colourData = [];
+    const sizeData = ["L", "M", "S", "XL", "XXL", "XXXL"];
+    const priceData = [
+      "Dưới 600.000 đ",
+      "600.000 đ - 1.200.000 đ",
+      "1.200.000 đ - 3.000.000 đ",
+    ];
+
     const allProductsLength = productsByCollection.length;
     for (let i = 0; i < allProductsLength; i++) {
       //
@@ -304,6 +311,8 @@ const getProductByCollection = async (req, res) => {
       total: productsByCollectionByQuery.length,
       brandData,
       colourData,
+      sizeData,
+      priceData,
     });
   } catch (error) {}
 };
